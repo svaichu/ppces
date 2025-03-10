@@ -18,18 +18,19 @@ int main(int argc, char **argv)
     if (worldRank == 0)
     {
         printf("Sending Ping (# %i)\n", pingCount);
-        // TODO: Send pingCount
+        // Send pingCount
         MPI_Send(&pingCount, 1, MPI_INT, 1, 0, MPI_COMM_WORLD);
 
-        // TODO: Receive pongCount
+        // Receive pongCount
         MPI_Recv(&pongCount, 1, MPI_INT, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         
         printf("Received Pong (# %i)\n", pongCount);
     }
-    // TODO: Do proper receive and send in other process
+    // Do proper receive and send in other process
     else
     {
         // TODO: Receive pingCount
+        MPI_Recv(&pingCount, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
         printf("Received Ping (# %i)\n", pingCount);
 
@@ -39,6 +40,7 @@ int main(int argc, char **argv)
     }
 
     // TODO: Finalize MPI
+    MPI_Finalize();
 
     return EXIT_SUCCESS;
 }
