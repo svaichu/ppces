@@ -1,0 +1,30 @@
+# MPI C-Compiler Wrapper // Adapt if necessary
+MPICC ?= mpicc
+# C-Compiler Flags
+CFLAGS ?=
+CFLAGS += -std=c99 -g -O3
+# MPI Launcher
+MPIEXEC ?= mpiexec
+# Default number of MPI processes to start
+NODES=2
+NPROCS=4
+
+# Set shell to bash, needed for the batch target
+SHELL:=/bin/bash
+
+SRC = $(PROG).c
+EXE = $(PROG).exe
+
+default: $(EXE)
+
+$(EXE): $(SRC)
+	$(MPICC) $(CFLAGS) $(SRC) -o $(EXE) -lm
+
+run: $(EXE)
+	unset I_MPI_TCP_BUFFER_SIZE && $(MPIEXEC) -n $(NPROCS) ./$(EXE) $(PROG_ARGS)
+
+batch: $(EXE)
+	sbatch <(sed -e 's/%PROG/$(PROG)/g' -e 's/%ARGS/$(PROG_ARGS)/g' -e 's/%NPROCS/$(NPROCS)/g' -e 's/%NODES/$(NODES)/g' $(dir $(lastword $(MAKEFILE_LIST)))batch.slurm)
+
+clean:
+	@rm -f $(EXE) core* *.o *.mod a.out *.exe* *.stdout
