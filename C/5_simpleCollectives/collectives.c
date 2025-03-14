@@ -11,6 +11,21 @@
 void bcast_int(int *data, int count, int root, MPI_Comm comm)
 {
     // TODO: Implement using send & receive only
+    if (myRank == root)
+    {
+        for (int j = 0; j < numProcs; j++)
+        {
+            if (j != myRank)
+            {
+                MPI_Send(&data, count, MPI_INT, j, 0, comm);
+            }
+        }
+    }
+    else
+    {
+        MPI_Recv(&data, count, MPI_INT, root, 0, comm, MPI_STATUS_IGNORE);
+    }
+    
 }
 
 /*********************************************************************

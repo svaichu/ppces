@@ -54,19 +54,28 @@ int main(int argc, char** argv)
     if (my_rank == 0)
     {
         // TODO: Create a vector type for sending columns
+        MPI_Type_vector(MATRIX_DIM, 1, MATRIX_DIM, MPI_INT, &dtype);
+        MPI_Type_commit(&dtype);
 
         print_typeinfo(dtype, "vector");
         print_matrix(matrix, MATRIX_DIM);
 
         // TODO: Send 10 columns to rank 1
+        for (int i = 0; i < 10; i++)
+            MPI_Send(&matrix[i], 1, dtype, 1, tag, MPI_COMM_WORLD);    
 
         // TODO: Free type after use
+        MPI_Type_free(&dtype);
     }
     else
     {
         // TODO: Create a contiguous type for receiving columns (as rows)
+        MPI_Type_contiguous(MATRIX_DIM, MPI_INT, &dtype);
+        MPI_Type_commit(&dtype);
 
         // TODO: Receive 10 columns as rows from rank 0
+        for (int i = 0; i < 10; i++)
+            MPI_Recv(&matrix[i
 
         print_typeinfo(dtype, "contiguous");
         print_matrix(matrix, MATRIX_DIM);

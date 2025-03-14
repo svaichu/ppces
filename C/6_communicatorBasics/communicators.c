@@ -17,9 +17,18 @@ int main(int argc, char* argv[])
 
     // TODO: Duplicate MPI_COMM_WORLD.
     //       Query rank and size in the new communicator.
+    MPI_Comm dupComm = MPI_COMM_NULL;
+    MPI_Comm_dup(MPI_COMM_WORLD, &dupComm);
+    MPI_RANK_SIZE(dupComm, &dupSize);
+    MPI_Comm_rank(dupComm, &dupRank);
 
     // TODO: Split MPI_COMM_WORLD into odd and even ranks in MPI_COMM_WORLD.
     //       Query rank and size in the new communicator.
+    MPI_Comm evenComm = MPI_COMM_NULL;
+    MPI_Comm oddComm = MPI_COMM_NULL;
+    MPI_Comm_split(MPI_COMM_WORLD, worldRank % 2, worldRank, &evenComm);
+    MPI_Comm_split(MPI_COMM_WORLD, worldRank % 2+1, worldRank, &oddComm);
+    
 
     // TODO: Split MPI_COMM_WORLD into upper and lower halves an invert the rank order.
     //       Query rank and size in the new communicator.
